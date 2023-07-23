@@ -9,6 +9,7 @@ import LandingLayout from "../container/Layout/LandingLayout";
  * import views
  */
 import Home from "../container/Views/Home";
+import Chat from "../container/Views/Chat";
 const Router = () => {
   return (
     <div className="">
@@ -16,6 +17,7 @@ const Router = () => {
         <Routes>
           <Route path="/" element={<LandingLayout />}>
             <Route path="" element={<Home />} />
+            <Route path="/chat" element={<Chat />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -6,7 +6,7 @@ const LandingLayout = () => {
   return (
     <div className="grid">
       <NavBar />
-      <main>
+      <main className='container'>
         <Outlet />
       </main>
     </div>
