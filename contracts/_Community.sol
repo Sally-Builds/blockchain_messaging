@@ -28,6 +28,7 @@ contract _Community {
     Community[] communityList;
 
     mapping(bytes32 => Member[]) communityMemberList;
+    mapping(bytes32 => Message[]) communityMessages;
 
     function createCommunity(
         string memory _name,
@@ -83,10 +84,52 @@ contract _Community {
         communityMemberList[communityID].push(member);
     }
 
+    function getAllCommunities() public view returns (Community[] memory) {
+        return communityList;
+    }
+
     function getCommunityMembers(
         bytes32 communityID
     ) public view returns (Member[] memory) {
         return communityMemberList[communityID];
+    }
+
+    function sendMessage(
+        bytes32 _communityID,
+        string memory _msg,
+        uint _time,
+        bytes32 _referenceTo
+    ) public {
+        //check if user belongs to community
+        if (
+            !_checkIfCommunityExist(_communityID) &&
+            !_checkIfUserIsAlreadyInCommunity(_communityID)
+        ) {
+            revert(
+                "community does not exist or user doesn't belong to community"
+            );
+        }
+        Message memory myMsg;
+        myMsg.sender = msg.sender;
+        myMsg._msg = _msg;
+        myMsg.time = _time;
+        myMsg.referenceTo = _referenceTo;
+        myMsg.ID = keccak256(abi.encodePacked(msg.sender, myMsg.time));
+        //save message
+        communityMessages[_communityID].push(myMsg);
+    }
+
+    function getCommunityMessages(
+        bytes32 _communityID
+    ) public view returns (Message[] memory) {
+        if (!_checkIfCommunityExist(_communityID)) {
+            revert("community not found");
+        }
+        if (!_checkIfUserIsAlreadyInCommunity(_communityID)) {
+            revert("You cannot view this communit messages");
+        }
+
+        return communityMessages[_communityID];
     }
 
     function _getCommunityID(
@@ -97,19 +140,19 @@ contract _Community {
     }
 
     function _checkIfCommunityExist(
-        bytes32 communityID
+        bytes32 _communityID
     ) public view returns (bool) {
-        if (communityMemberList[communityID].length > 0) {
+        if (communityMemberList[_communityID].length > 0) {
             return true;
         }
         return false;
     }
 
     function _checkIfUserIsAlreadyInCommunity(
-        bytes32 communityID
+        bytes32 _communityID
     ) public view returns (bool) {
         Member[] memory members;
-        members = communityMemberList[communityID];
+        members = communityMemberList[_communityID];
 
         for (uint i = 0; i < members.length; i++) {
             if (members[i].member_address == msg.sender) {
