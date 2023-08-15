@@ -33,6 +33,14 @@ contract _User {
         return users[msg.sender];
     }
 
+    function getUser(address user_address) public view returns (User memory) {
+        if (!_checkIfUserExists(user_address)) {
+            revert("No user found");
+        }
+
+        return users[user_address];
+    }
+
     function changeAdmin(address new_address) public {
         //check if sender is admin
         if (!_isAdmin(msg.sender)) {
@@ -47,9 +55,9 @@ contract _User {
         address user_address
     ) public view returns (bool) {
         if (bytes(users[user_address].name).length > 0) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     function _isAdmin(address sender) public view returns (bool) {
