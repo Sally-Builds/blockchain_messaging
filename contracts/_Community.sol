@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
-import "./_User.sol";
+import "./_IUser.sol";
 
 contract _Community {
-    _User user;
+    _IUser user;
     struct Community {
         string name;
         string guidelines;
         bytes32 communityID;
-        address communityEncryptionPub;
+        bytes32 communityEncryptionPub;
     }
 
     struct Member {
@@ -30,10 +30,14 @@ contract _Community {
     mapping(bytes32 => Member[]) communityMemberList;
     mapping(bytes32 => Message[]) communityMessages;
 
+    // constructor(address _User_contract) {
+    //     user = _IUser(_User_contract);
+    // }
+
     function createCommunity(
         string memory _name,
         string memory _guideline,
-        address _communityEncryptPub
+        string memory _communityEncryptPub
     ) public returns (Community memory) {
         // check if it is admin that is trying to create community
         if (!user._isAdmin(msg.sender)) {
@@ -43,10 +47,15 @@ contract _Community {
         Community memory community;
         community.name = _name;
         community.guidelines = _guideline;
-        community.communityEncryptionPub = _communityEncryptPub;
+        community.communityEncryptionPub = bytes32(
+            abi.encodePacked(_communityEncryptPub)
+        );
 
         //hash communityID
-        community.communityID = _getCommunityID(_name, _communityEncryptPub);
+        community.communityID = _getCommunityID(
+            _name,
+            bytes32(abi.encodePacked(_communityEncryptPub))
+        );
 
         //add to community list
         communityList.push(community);
@@ -134,7 +143,7 @@ contract _Community {
 
     function _getCommunityID(
         string memory _name,
-        address _encryptionPub
+        bytes32 _encryptionPub
     ) public pure returns (bytes32) {
         return keccak256(abi.encodePacked(_name, _encryptionPub));
     }

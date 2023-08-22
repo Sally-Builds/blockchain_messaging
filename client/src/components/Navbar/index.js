@@ -1,6 +1,29 @@
 import React from 'react'
+import detectEthereumProvider from '@metamask/detect-provider'
 
 const NavBar = () => {
+
+  const joinNetwork = async () => {
+    const provider = await detectEthereumProvider()
+
+if (provider) {
+
+  console.log('Ethereum successfully detected!')
+
+  // From now on, this should always be true:
+  // provider === window.ethereum
+
+  // Access the decentralized web!
+
+  // Legacy providers may only have ethereum.sendAsync
+  const chainId = provider.request({
+    method: "eth_requestAccounts",
+  }).then(res => {}).catch((e) => window.location.reload)
+  window.location.reload()
+} else {
+  console.log("download metamask")
+}
+  }
   return (
     <nav role='navigation' class="flex items-center justify-between flex-wrap bg-teal-500 p-4">
   <div class="">
@@ -27,7 +50,12 @@ const NavBar = () => {
       </a>
     </div> */}
     <div>
-      <a href="/chat" class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0">Join Network</a>
+      <button href="/chat" 
+      class="inline-block text-sm px-4 py-2 leading-none border rounded
+       text-white border-white hover:border-transparent hover:text-teal-500
+        hover:bg-white mt-4 lg:mt-0"
+        onClick={joinNetwork}
+        >Join Network</button>
     </div>
   </div>
 </nav>

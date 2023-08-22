@@ -6,14 +6,18 @@ contract _User {
     struct User {
         address user;
         string name;
-        address encryptionPub;
+        bytes32 encryptionPub;
     }
 
     mapping(address => User) users;
 
+    constructor() {
+        admin = msg.sender;
+    }
+
     function register(
         string memory _name,
-        address _encryptionPub
+        string memory _encryptionPub
     ) public returns (User memory) {
         //check if user has already registerd
         if (_checkIfUserExists(msg.sender)) {
@@ -21,7 +25,7 @@ contract _User {
         }
         //register user
         User memory user;
-        user.encryptionPub = _encryptionPub;
+        user.encryptionPub = bytes32(abi.encodePacked(_encryptionPub));
         user.name = _name;
 
         users[msg.sender] = user;
