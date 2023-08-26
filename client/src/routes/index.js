@@ -1,5 +1,6 @@
 import { Route, Routes, BrowserRouter } from "react-router-dom";
-
+import React, { useState, useContext, useEffect } from "react";
+import {UserContext} from "../context/user_context";
 /**
  * import Layouts
  */
@@ -10,8 +11,11 @@ import LandingLayout from "../container/Layout/LandingLayout";
  */
 import Home from "../container/Views/Home";
 import Chat from "../container/Views/Chat";
+
+
 const Router = () => {
-  return (
+// const {} = useContext(UserContext);
+return (
     <div className="">
       <BrowserRouter>
         <Routes>

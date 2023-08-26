@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
-import "./_IUser.sol";
+import "./iuser_interface.sol";
 
 contract _Community {
     _IUser user;
@@ -30,9 +30,9 @@ contract _Community {
     mapping(bytes32 => Member[]) communityMemberList;
     mapping(bytes32 => Message[]) communityMessages;
 
-    // constructor(address _User_contract) {
-    //     user = _IUser(_User_contract);
-    // }
+    constructor(address _User_contract) {
+        user = _IUser(_User_contract);
+    }
 
     function createCommunity(
         string memory _name,
@@ -87,7 +87,7 @@ contract _Community {
 
         Member memory member;
         member.member_address = msg.sender;
-        member.name = user.getMe().name;
+        member.name = user.getMyName(msg.sender);
 
         // add user to community
         communityMemberList[communityID].push(member);
