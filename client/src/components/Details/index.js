@@ -1,40 +1,90 @@
-import React from 'react'
+import React, { useContext } from "react";
+import { CommunityContext } from "../../context/community_context";
+import Chat from "../chat_area";
 
 const Details = () => {
+  const { community, communityMembers, joinCommunity, myCommunity } =
+    useContext(CommunityContext);
+
+  const join = async (id) => {
+    await joinCommunity(id);
+  };
+
   return (
     <>
-        <div className='flex flex-col p-6'>
-          <div className='py-4'>
-          <div className="text-3xl font-medium leading-tight pb-8">
-          Community Guidelines
-        </div>
-        <div className='mb-3 text-gray-500 dark:text-gray-400'>
-              <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Obcaecati praesentium optio cum 
-                  deleniti accusamus consequatur magni velit, eaque voluptatem, veritatis perspiciatis atque iusto harum 
-                  nostrum exercitationem tempora id in quisquam? Lorem ipsum dolor sit, amet consectetur adipisicing elit. Obcaecati praesentium optio cum 
-                  deleniti accusamus consequatur magni velit, eaque voluptatem, veritatis perspiciatis atque iusto harum 
-                  nostrum exercitationem tempora id in quisquam?</p>
-              <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Obcaecati praesentium optio cum deleniti accusamus consequatur magni velit, eaque voluptatem, veritatis perspiciatis atque iusto harum nostrum exercitationem tempora id in quisquam?</p>
-              <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Obcaecati praesentium optio cum deleniti accusamus consequatur magni velit, eaque voluptatem, veritatis perspiciatis atque iusto harum nostrum exercitationem tempora id in quisquam?</p>
+      {/* show community details if user has not joined any community yet */}
+      {myCommunity !=
+      "0x0000000000000000000000000000000000000000000000000000000000000000" ? (
+        <Chat title={community.name} />
+      ) : (
+        <div className="flex flex-col p-6">
+          {community && (
+            <>
+              <div className="py-4">
+                <div className="text-3xl flex font-medium justify-between leading-tight pb-8">
+                  <div className="text-gray-500 dark:text-gray-400">
+                    {community.name}
+                  </div>
+                  <div className="text-sm pt-2">
+                    <button
+                      onClick={() => join(community.communityID)}
+                      className="bg-transparent hover:bg-blue-500 
+                      text-blue-700 font-bold hover:text-white 
+                      py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                    >
+                      Join
+                    </button>
+                  </div>
+                </div>
+                <hr className="pb-4" />
+                <div className="mb-3 text-gray-500 dark:text-gray-400">
+                  <div className="text-xl font-medium leading-tight pb-6">
+                    Community Guidelines
+                  </div>
+                  <p>{community.guidelines}</p>
+                </div>
               </div>
-          </div>
 
-          <div className='py-4'>
-              <div className="font-antialiased hover:subpixel-antialiased tracking-widest font-bold text-gray-700">
-              Community Members (98)</div>
+              <hr className="pt-4" />
+              <div className="py-2">
+                <div className="font-antialiased hover:subpixel-antialiased tracking-widest font-bold text-gray-700">
+                  Community Members ({communityMembers.length})
+                </div>
 
-            <ul>
-              <li>
-                User 1
-              </li>
-              <li>
-                User 2
-              </li>
-            </ul>
-          </div>
+                <ul>
+                  {communityMembers.length > 0 && (
+                    <>
+                      {communityMembers.map((el, i) => (
+                        <li className="py-3 sm:py-4" key={i}>
+                          <div className="flex items-center space-x-4">
+                            <div className="flex-shrink-0">
+                              <img
+                                className="w-8 h-8 rounded-full"
+                                src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+                                alt="Neil"
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                {el.name}
+                              </p>
+                              <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                                Lorem dolor sit amet the quick brown fox jumps
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </>
+                  )}
+                </ul>
+              </div>
+            </>
+          )}
         </div>
+      )}
     </>
-  )
-}
+  );
+};
 
-export default Details
+export default Details;

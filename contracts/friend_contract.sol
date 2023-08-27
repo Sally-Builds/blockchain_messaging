@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 // import "./_User.sol";
-import "./iuser_interface.sol";
+import "./user_contract.sol";
 
 contract _Friend {
-    _IUser user;
+    _User user;
     struct Message {
         bytes32 ID;
         uint time;
@@ -23,7 +23,7 @@ contract _Friend {
     mapping(bytes32 => Message[]) PeerMessages;
 
     constructor(address _User_contract) {
-        user = _IUser(_User_contract);
+        user = _User(_User_contract);
     }
 
     function addFriend(address friendAddress) public {

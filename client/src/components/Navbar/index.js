@@ -2,7 +2,13 @@ import React, {useContext} from 'react'
 import { UserContext } from '../../context/user_context'
 
 const NavBar = () => {
-const {joinNetwork, user_address} = useContext(UserContext);
+const {joinNetwork, getMe, user_name, user_address} = useContext(UserContext);
+
+  const join = async () => {
+    await joinNetwork();
+    await getMe();
+  }
+
   return (
     <nav role='navigation' className="flex items-center justify-between flex-wrap bg-teal-500 p-4">
   <div className="">
@@ -18,13 +24,13 @@ const {joinNetwork, user_address} = useContext(UserContext);
   </div>
   <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto justify-end">
     {
-      user_address ? <>{user_address}</> :
+      user_address ? <>{user_name}</> :
       <div>
       <button href="/chat" 
       className="inline-block text-sm px-4 py-2 leading-none border rounded
        text-white border-white hover:border-transparent hover:text-teal-500
         hover:bg-white mt-4 lg:mt-0"
-        onClick={joinNetwork}
+        onClick={join}
         >Join Network</button>
     </div>}
   </div>

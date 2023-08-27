@@ -1,27 +1,28 @@
 import React, { createContext, useEffect, useState } from "react";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { loadContract } from "../contract/load_contract";
-import Web3 from "web3"
 
 export const UserContext = createContext(null);
 const UserContextProvider = ({ children }) => {
   const [user_address, setUserAddress] = useState("");
   const [user_name, setUserName] = useState("");
   const [contract, setContract] = useState("");
+  const [isAdmin, setisAdmin] = useState(false);
 
   //contract
   useEffect(() => {
-      loadContract("_User", Web3).then((contract) => setContract(contract));
-  },[])
+    loadMyContract();
+  }, []);
 
-  function getRPCErrorMessage(err){
-    var open = err.stack.indexOf('{')
-    var close = err.stack.lastIndexOf('}')
-    var j_s = err.stack.substring(open, close + 1);
-    var j = JSON.parse(j_s);
-    var reason = j.data[Object.keys(j.data)[0]].reason;
-    return reason;
-}
+  const loadMyContract = async () => {
+    const result = await loadContract("_User");
+    setContract(result.contract);
+    if (result.address) {
+      setUserAddress(result.address);
+      await get(result.contract);
+      await checkIfAdmin(result.contract, result.address);
+    }
+  };
 
   //connect metamask to network
   const joinNetwork = async () => {
@@ -32,6 +33,7 @@ const UserContextProvider = ({ children }) => {
 
       provider
         .request({
+          // method: "eth_accounts",
           method: "eth_requestAccounts",
         })
         .then((addresses) => {
@@ -45,29 +47,37 @@ const UserContextProvider = ({ children }) => {
 
   const register = async (name, age) => {
     try {
-      console.log(user_address)
-    // const res = await contract.methods.getMe().call({from: user_address});
-      const res = await contract.methods.register(name, 'encPubjk').send({from: user_address})
-         console.log(res)
+      const res = await contract.register(name, "Public key encryption");
+      console.log(res);
     } catch (error) {
-        // const data = error.data.message
-        // const txHash = Object.keys(data)[0]; // TODO improve
-        // const reason = data[txHash].reason;
-    
-        console.log(error); // prints "This is error message"
+      console.log(error); // prints "This is error message"
     }
-  }
+  };
 
   const getMe = async () => {
-    const res = await contract.methods.getMe().call({from: user_address});
+    const res = await contract.getMe();
+    console.log(res);
     setUserName(res.name);
-  }
+  };
+
+  const get = async (contract) => {
+    const res = await contract.getMe();
+    console.log(res);
+    setUserName(res.name);
+  };
+
+  const checkIfAdmin = async (contract, address) => {
+    const result = await contract._isAdmin(address);
+    setisAdmin(result);
+  };
 
   const value = {
     joinNetwork,
     user_address,
+    user_name,
     register,
-    getMe
+    getMe,
+    isAdmin,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

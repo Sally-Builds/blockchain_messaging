@@ -1,21 +1,6 @@
-import React from 'react'
+import React from "react";
+const ChatLayout = ({ children }) => {
+  return <>{children}</>;
+};
 
-const ChatLayout = () => {
-  return (
-    <>
-        <div className='grid grid-cols-2'>
-
-            <div>
-                first
-            </div>
-
-            <div>
-                second
-            </div>
-
-        </div>
-    </>
-  )
-}
-
-export default ChatLayout
+export default ChatLayout;

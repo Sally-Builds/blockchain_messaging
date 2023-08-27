@@ -1,15 +1,26 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
-import "./iuser_interface.sol";
-
-contract _User is _IUser {
+contract _User {
     address admin;
+    struct User {
+        address user;
+        string name;
+        bytes32 encryptionPub;
+        // string encryptionPub;
+    }
 
     mapping(address => User) users;
 
-    constructor() {
+    constructor(string memory _encryptionPub) {
         admin = msg.sender;
+        //register admin
+        User memory user;
+        user.encryptionPub = bytes32(abi.encodePacked(_encryptionPub));
+        // user.encryptionPub = _encryptionPub;
+        user.name = "admin";
+
+        users[msg.sender] = user;
     }
 
     function register(
@@ -23,10 +34,10 @@ contract _User is _IUser {
         if (_checkIfUserExists(msg.sender)) {
             revert("User already exist.");
         }
-        // require(!_checkIfUserExists(msg.sender), "user already exist");
         //register user
         User memory user;
         user.encryptionPub = bytes32(abi.encodePacked(_encryptionPub));
+        // user.encryptionPub = _encryptionPub;
         user.name = _name;
 
         users[msg.sender] = user;
@@ -74,5 +85,9 @@ contract _User is _IUser {
             return true;
         }
         return false;
+    }
+
+    function okay() public pure returns (uint) {
+        return 4 * 5;
     }
 }

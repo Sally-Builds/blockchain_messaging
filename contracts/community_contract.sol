@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
-import "./iuser_interface.sol";
+// import "./_IUser.sol";
+import "./user_contract.sol";
 
 contract _Community {
-    _IUser user;
+    _User user;
     struct Community {
         string name;
         string guidelines;
@@ -22,6 +23,7 @@ contract _Community {
         uint time;
         string _msg;
         address sender;
+        string name;
         bytes32 referenceTo; // this is the id of the message which this message is referencing
     }
 
@@ -29,9 +31,10 @@ contract _Community {
 
     mapping(bytes32 => Member[]) communityMemberList;
     mapping(bytes32 => Message[]) communityMessages;
+    mapping(address => bytes32) MyCommunity;
 
     constructor(address _User_contract) {
-        user = _IUser(_User_contract);
+        user = _User(_User_contract);
     }
 
     function createCommunity(
@@ -91,6 +94,7 @@ contract _Community {
 
         // add user to community
         communityMemberList[communityID].push(member);
+        MyCommunity[msg.sender] = communityID;
     }
 
     function getAllCommunities() public view returns (Community[] memory) {
@@ -103,10 +107,30 @@ contract _Community {
         return communityMemberList[communityID];
     }
 
+    function sendMessage(bytes32 _communityID, string memory _msg) public {
+        //check if user belongs to community
+        if (
+            !_checkIfCommunityExist(_communityID) &&
+            !_checkIfUserIsAlreadyInCommunity(_communityID)
+        ) {
+            revert(
+                "community does not exist or user doesn't belong to community"
+            );
+        }
+        uint _time = block.timestamp;
+        Message memory myMsg;
+        myMsg.sender = msg.sender;
+        myMsg._msg = _msg;
+        myMsg.name = user.getMyName(msg.sender);
+        myMsg.time = _time;
+        myMsg.ID = keccak256(abi.encodePacked(msg.sender, myMsg.time));
+        //save message
+        communityMessages[_communityID].push(myMsg);
+    }
+
     function sendMessage(
         bytes32 _communityID,
         string memory _msg,
-        uint _time,
         bytes32 _referenceTo
     ) public {
         //check if user belongs to community
@@ -118,9 +142,11 @@ contract _Community {
                 "community does not exist or user doesn't belong to community"
             );
         }
+        uint _time = block.timestamp;
         Message memory myMsg;
         myMsg.sender = msg.sender;
         myMsg._msg = _msg;
+        myMsg.name = user.getMyName(msg.sender);
         myMsg.time = _time;
         myMsg.referenceTo = _referenceTo;
         myMsg.ID = keccak256(abi.encodePacked(msg.sender, myMsg.time));
@@ -148,6 +174,21 @@ contract _Community {
         return keccak256(abi.encodePacked(_name, _encryptionPub));
     }
 
+    function getCommunity(
+        bytes32 communityID
+    ) public view returns (Community memory) {
+        Community memory comm;
+
+        for (uint i = 0; i < communityList.length; i++) {
+            if (communityList[i].communityID == communityID) {
+                comm = communityList[i];
+                break;
+            }
+        }
+
+        return comm;
+    }
+
     function _checkIfCommunityExist(
         bytes32 _communityID
     ) public view returns (bool) {
@@ -169,5 +210,9 @@ contract _Community {
             }
         }
         return false;
+    }
+
+    function getMyCommunity() public view returns (bytes32) {
+        return MyCommunity[msg.sender];
     }
 }
