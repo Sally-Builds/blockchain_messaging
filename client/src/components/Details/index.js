@@ -9,7 +9,6 @@ const Details = () => {
   const join = async (id) => {
     await joinCommunity(id);
   };
-
   return (
     <>
       {/* show community details if user has not joined any community yet */}

@@ -5,14 +5,12 @@ const Home = () => {
   const { user_address, user_name, register } = useContext(UserContext);
 
   const [name, setName] = useState("");
-  const [age, setAge] = useState(18);
 
   const submit = async (e) => {
     e.preventDefault();
 
     //submit application
-    console.log(name, age);
-    register(name, age);
+    register(name, "age");
   };
   return (
     <div className="p-4 flex flex-col">
@@ -68,7 +66,14 @@ const Home = () => {
             <span className="text-blue-400">Connect to register</span>
           ) : user_name ? (
             <>
-              <div>Go To Chat</div>
+              <div>
+                <a
+                  href="/chat/direct_message"
+                  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                >
+                  Enter chat room
+                </a>
+              </div>
             </>
           ) : (
             <>
@@ -94,24 +99,6 @@ const Home = () => {
                         placeholder="name@company.com"
                         required
                       />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="email"
-                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                      >
-                        Your Name
-                      </label>
-                      <input
-                        type="number"
-                        name="age"
-                        value={age}
-                        onChange={(e) => setAge(e.target.value)}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="name@company.com"
-                        required
-                      />
-                      <span>sth is not right</span>
                     </div>
                     <div className="flex items-start">
                       <div className="flex items-center h-5">

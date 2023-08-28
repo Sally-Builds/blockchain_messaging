@@ -33,6 +33,10 @@ contract _Community {
     mapping(bytes32 => Message[]) communityMessages;
     mapping(address => bytes32) MyCommunity;
 
+    //events
+    event communityCreated(Community[] communities);
+    event getMessages(Message[] messages, bytes32 communityID);
+
     constructor(address _User_contract) {
         user = _User(_User_contract);
     }
@@ -69,6 +73,7 @@ contract _Community {
         member.member_address = msg.sender;
         communityMemberList[community.communityID].push(member);
         // return newly create community
+        emit communityCreated(communityList);
         return community;
     }
 
@@ -126,6 +131,8 @@ contract _Community {
         myMsg.ID = keccak256(abi.encodePacked(msg.sender, myMsg.time));
         //save message
         communityMessages[_communityID].push(myMsg);
+        Message[] memory commMessages = getCommunityMessages(_communityID);
+        emit getMessages(commMessages, _communityID);
     }
 
     function sendMessage(
@@ -152,6 +159,8 @@ contract _Community {
         myMsg.ID = keccak256(abi.encodePacked(msg.sender, myMsg.time));
         //save message
         communityMessages[_communityID].push(myMsg);
+        Message[] memory commMessages = getCommunityMessages(_communityID);
+        emit getMessages(commMessages, _communityID);
     }
 
     function getCommunityMessages(
@@ -161,7 +170,7 @@ contract _Community {
             revert("community not found");
         }
         if (!_checkIfUserIsAlreadyInCommunity(_communityID)) {
-            revert("You cannot view this communit messages");
+            revert("You cannot view this community messages");
         }
 
         return communityMessages[_communityID];

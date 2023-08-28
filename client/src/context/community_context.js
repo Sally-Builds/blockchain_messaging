@@ -14,17 +14,22 @@ const CommunityContextProvider = ({ children }) => {
 
   //contract
   useEffect(() => {
+    const loadMyContract = async () => {
+      const result = await loadContract("_Community");
+      setContract(result.contract);
+      if (result.contract) {
+        getAllCommunities(result.contract);
+        getMyCommunity(result.contract);
+      }
+    };
     loadMyContract();
-  }, []);
-
-  const loadMyContract = async () => {
-    const result = await loadContract("_Community");
-    setContract(result.contract);
-    if (result.contract) {
-      getAllCommunities(result.contract);
-      getMyCommunity(result.contract);
-    }
-  };
+    // if (contract) {
+    //   contract.on("getMessages", (message, communityID) => {
+    //     console.log("entered");
+    //     console.log(message, communityID);
+    //   });
+    // }
+  }, [contract]);
 
   const getAllCommunities = async (contract) => {
     const res = await contract.getAllCommunities();
@@ -38,9 +43,7 @@ const CommunityContextProvider = ({ children }) => {
   };
 
   const getCommunityMembers = async (communityID) => {
-    console.log(contract);
     const result = await contract.getCommunityMembers(communityID);
-    console.log(result);
     setCommunityMembers(result);
   };
 
@@ -48,7 +51,6 @@ const CommunityContextProvider = ({ children }) => {
     try {
       const res = await contract.getMyCommunity();
       setMyCommunity(res);
-      console.log(res);
       if (
         res !=
         0x0000000000000000000000000000000000000000000000000000000000000000
@@ -56,8 +58,9 @@ const CommunityContextProvider = ({ children }) => {
         const comm = await contract.getCommunity(res);
         setCommunity(comm);
         const messages = await contract.getCommunityMessages(res);
-        console.log(messages);
         setCommunityMessages(messages);
+        const members = await contract.getCommunityMembers(res);
+        setCommunityMembers(members);
       }
     } catch (error) {
       console.log(error);

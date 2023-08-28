@@ -26,6 +26,5 @@ export const loadContract = async (name) => {
     console.log(e);
     console.log(`Contract ${name} cannot be loaded`);
   }
-  console.log(address);
   return { contract, address };
 };

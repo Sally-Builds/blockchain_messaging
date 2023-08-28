@@ -1,39 +1,18 @@
 import React, { useState, useContext, Fragment } from "react";
-import { useNavigate } from "react-router-dom";
-import { CommunityContext } from "../../context/community_context";
 import { UserContext } from "../../context/user_context";
-import { Dialog, Transition } from "@headlessui/react";
+import { FriendContext } from "../../context/friend_context";
 import "./index.css";
 
-const ChatArea = ({ title }) => {
-  const { CommunityMessages, myCommunity, sendMessage, communityMembers } =
-    useContext(CommunityContext);
-  const navigate = useNavigate();
-
-  const { user_address, getAFriend } = useContext(UserContext);
-  let [isOpen, setIsOpen] = useState(false);
+const ChatArea2 = ({ friends, index }) => {
+  const { user_address, friend } = useContext(UserContext);
+  const { addFriend, sendMessage } = useContext(FriendContext);
   const [message, setMessage] = useState("");
-
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  function openModal() {
-    setIsOpen(true);
-  }
-
-  function setTempFriend(user) {
-    getAFriend(user);
-    navigate("/chat/direct_message");
-  }
 
   const send = async (e) => {
     e.preventDefault();
     const msg = {
       msg: message,
-      referenceTo:
-        "0x6865790000000000000000000000000000000000000000000000000000000000",
-      communityID: myCommunity,
+      friend: friends[index].user,
     };
 
     try {
@@ -43,37 +22,51 @@ const ChatArea = ({ title }) => {
       console.log(error);
     }
   };
+
   return (
     <>
       <div className="flex-1 p:2 sm:p-6 justify-between flex flex-col h-screen">
-        <div className="flex items-center justify-between flex-wrap py-3 border-b-2 border-gray-200">
-          <div className="text-2xl mt-1">
-            <span className="text-gray-700 mr-3">{title}</span>
-          </div>
-          <div>
-            <button
-              onClick={openModal}
-              className="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 "
-            >
-              <svg
-                className="fill-current h-3 w-3"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <title>Menu</title>
-                <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-              </svg>
-            </button>
+        <div className="flex sm:items-center justify-between py-3 border-b-2 border-gray-200">
+          <div className="relative flex items-center space-x-4">
+            <div className="relative">
+              <span className="absolute text-green-500 right-0 bottom-0">
+                <svg width="20" height="20">
+                  <circle cx="8" cy="8" r="8" fill="currentColor"></circle>
+                </svg>
+              </span>
+              <img
+                src="/default.jpg"
+                alt=""
+                className="w-10 sm:w-16 h-10 sm:h-16 rounded-full"
+              />
+            </div>
+            <div className="flex justify leading-tight">
+              <div className="text-2xl mt-1 flex items-center">
+                <span className="text-gray-700 mr-3">
+                  {friends.length > 0 && friends[index].name && (
+                    <>{friends[index].name}</>
+                  )}
+                </span>
+              </div>
+              {/* <span className="text-lg text-gray-600">Junior Developer</span> */}
+
+              <div>
+                <button onClick={() => addFriend(friend.member_address)}>
+                  Add to friend List
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        {CommunityMessages.length > 0 ? (
+
+        {friends.length > 0 && friends[index].messages.length > 0 ? (
           <div
             id="messages"
             className="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
           >
-            {CommunityMessages.map((el, i) => (
+            {friends[index].messages.map((el, i) => (
               <>
-                {`${el.sender.toLowerCase()}` == user_address ? (
+                {`${el.sender.toLowerCase()}` === user_address ? (
                   <>
                     <div className="chat-message" key={i}>
                       <div className="flex items-end justify-end">
@@ -150,6 +143,7 @@ const ChatArea = ({ title }) => {
             </div>
           </>
         )}
+
         <div className="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
           <form onSubmit={send}>
             <div className="relative flex">
@@ -182,87 +176,8 @@ const ChatArea = ({ title }) => {
           </form>
         </div>
       </div>
-
-      {/* user's Dialog */}
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 p-2"
-                  >
-                    Community Members ({communityMembers.length})
-                  </Dialog.Title>
-                  <hr className="p-2" />
-                  <div className="mt-2">
-                    <ul>
-                      {communityMembers.length > 0 && (
-                        <>
-                          {communityMembers.map((el, i) => (
-                            <li
-                              className="py-3 sm:py-4"
-                              key={i}
-                              onClick={() => setTempFriend(el)}
-                            >
-                              <div className="flex items-center space-x-4">
-                                <div className="flex-shrink-0">
-                                  <img
-                                    className="w-8 h-8 rounded-full"
-                                    src="/default.jpg"
-                                    alt="Neil"
-                                  />
-                                </div>
-                                <div className="min-w-0">
-                                  <div className="text-sm font-semibold text-gray-900 truncate dark:text-white">
-                                    {el.name}
-                                  </div>
-                                  <div className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                    <button
-                                      href="/chat/direct_message"
-                                      className="bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white px-4 border border-blue-500 hover:border-transparent rounded"
-                                    >
-                                      Add Friend
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </li>
-                          ))}
-                        </>
-                      )}
-                    </ul>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition>
     </>
   );
 };
 
-export default ChatArea;
+export default ChatArea2;

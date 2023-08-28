@@ -9,6 +9,8 @@ const UserContextProvider = ({ children }) => {
   const [contract, setContract] = useState("");
   const [isAdmin, setisAdmin] = useState(false);
 
+  const [friend, setFriend] = useState("");
+
   //contract
   useEffect(() => {
     loadMyContract();
@@ -71,6 +73,13 @@ const UserContextProvider = ({ children }) => {
     setisAdmin(result);
   };
 
+  const getAFriend = async (user) => {
+    if (user.member_address.toLowerCase() != user_address) {
+      console.log(user);
+      setFriend(user);
+    }
+  };
+
   const value = {
     joinNetwork,
     user_address,
@@ -78,6 +87,8 @@ const UserContextProvider = ({ children }) => {
     register,
     getMe,
     isAdmin,
+    friend,
+    getAFriend,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

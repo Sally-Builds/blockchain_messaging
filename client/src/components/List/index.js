@@ -18,6 +18,7 @@ const List = ({ tabChange }) => {
     "private message": [],
     Community: [],
   });
+  const [selectedIndex, setSelectedIndex] = useState(1);
 
   const setCommunity = async (id) => {
     await getCommunity(id);
@@ -26,9 +27,11 @@ const List = ({ tabChange }) => {
   return (
     <div className="w-full max-w-md px-2 sm:px-0">
       <Tab.Group
-        onChange={(index) => {
-          tabChange(index);
-        }}
+        // onChange={(index) => {
+        //   tabChange(index);
+        // }}
+        selectedIndex={selectedIndex}
+        onChange={setSelectedIndex}
       >
         <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
           {Object.keys(categories).map((category) => (
