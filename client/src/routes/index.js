@@ -17,6 +17,7 @@ import Home2 from "../container/Views/Home2";
 import Chat from "../container/Views/Chat";
 import Test from "../container/Views/Test";
 import Dm from "../container/Views/Dm";
+import Terms from "../container/Views/terms";
 
 const Router = () => {
   const { isLoading } = useContext(UserContext);
@@ -44,6 +45,7 @@ const Router = () => {
             <Routes>
               <Route path="/" element={<LandingLayout />}>
                 <Route path="" element={<Home2 />} />
+                <Route path="/terms_and_conditions" element={<Terms />} />
 
                 {/* <Route path="/chat" element={<Chat />} /> */}
               </Route>

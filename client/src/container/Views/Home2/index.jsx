@@ -86,7 +86,7 @@ const Home = () => {
                     I accept the{" "}
                     <a
                       className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                      href="/"
+                      href="/terms_and_conditions"
                     >
                       Terms and Conditions
                     </a>
