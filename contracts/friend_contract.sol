@@ -32,6 +32,7 @@ contract _Friend {
         }
 
         friends[msg.sender].push(friendAddress);
+        friends[friendAddress].push(msg.sender);
     }
 
     function getFriends() public view returns (Friend[] memory) {

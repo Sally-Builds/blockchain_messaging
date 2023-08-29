@@ -16,20 +16,20 @@ const Index = () => {
     <>
       <div className="grid grid-cols-12 h-screen">
         <div className="col-span-4 p-2 border-double border-r-2 h-full">
-          <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
-            <ul class="flex flex-wrap -mb-px">
-              <li class="mr-2">
+          <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
+            <ul className="flex flex-wrap -mb-px">
+              <li className="mr-2">
                 <Link
                   to="/chat/direct_message"
-                  class="inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
+                  className="inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
                 >
                   Direct Message
                 </Link>
               </li>
-              <li class="mr-2">
+              <li className="mr-2">
                 <Link
                   to="/chat/community"
-                  class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                  className="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
                 >
                   Community
                 </Link>
@@ -96,7 +96,15 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="col-span-8">
+        <div
+          className="col-span-8 bg-cover"
+          style={{
+            backgroundImage: "url(/whasapp.jpeg)",
+            backgroundPosition: "center",
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
           <ChatArea2 friends={friends} index={index} />
         </div>
       </div>

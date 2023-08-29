@@ -1,12 +1,15 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { loadContract } from "../contract/load_contract";
 import { toast } from "react-toastify";
+import { UserContext } from "./user_context";
 
 export const FriendContext = createContext(null);
 
 const FriendContextProvider = ({ children }) => {
   const [contract, setContract] = useState("");
   const [friends, setFriends] = useState([]);
+
+  const { setLoading } = useContext(UserContext);
 
   //contract
   useEffect(() => {
@@ -62,6 +65,7 @@ const FriendContextProvider = ({ children }) => {
   };
 
   const sendMessage = async (data) => {
+    setLoading(true);
     try {
       let result = await contract.sendPeerMessage(
         data.friend,
@@ -71,7 +75,9 @@ const FriendContextProvider = ({ children }) => {
       result
         .wait()
         .then(async () => {
-          await getMessagesWithAFriend(data.friend);
+          await getMessagesWithAFriend(data.friend).then(() => {
+            setLoading(false);
+          });
         })
         .catch((e) => console.log(e));
     } catch (error) {

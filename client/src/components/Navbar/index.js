@@ -46,14 +46,14 @@ const NavBar = () => {
           <>
             {user_name ? (
               <span
-                class="
+                className="
             bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-2.5 rounded dark:bg-blue-900 dark:text-blue-300"
               >
                 {user_name}
               </span>
             ) : (
               <span
-                class="
+                className="
             bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-2.5 rounded dark:bg-blue-900 dark:text-blue-300"
               >
                 Register Below to

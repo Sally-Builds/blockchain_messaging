@@ -1,6 +1,7 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { loadContract } from "../contract/load_contract";
 import { toast } from "react-toastify";
+import { UserContext } from "./user_context";
 
 export const CommunityContext = createContext(null);
 
@@ -11,6 +12,8 @@ const CommunityContextProvider = ({ children }) => {
   const [communityMembers, setCommunityMembers] = useState([]);
   const [myCommunity, setMyCommunity] = useState("");
   const [CommunityMessages, setCommunityMessages] = useState([]);
+
+  const { setLoading } = useContext(UserContext);
 
   //contract
   useEffect(() => {
@@ -23,12 +26,6 @@ const CommunityContextProvider = ({ children }) => {
       }
     };
     loadMyContract();
-    // if (contract) {
-    //   contract.on("getMessages", (message, communityID) => {
-    //     console.log("entered");
-    //     console.log(message, communityID);
-    //   });
-    // }
   }, [contract]);
 
   const getAllCommunities = async (contract) => {
@@ -75,12 +72,15 @@ const CommunityContextProvider = ({ children }) => {
   const sendMessage = async (data) => {
     try {
       // await contract.sendMessage(data.communityID, data.msg);
+      setLoading(true);
       const res = await contract["sendMessage(bytes32,string)"](
         data.communityID,
         data.msg
       );
       res.wait();
-      await getCommunityMessages(data.communityID);
+      await getCommunityMessages(data.communityID).then(() => {
+        setLoading(false);
+      });
     } catch (error) {
       console.log(error);
     }
@@ -88,23 +88,25 @@ const CommunityContextProvider = ({ children }) => {
 
   const create_community = async (data) => {
     try {
-      console.log(data, "jdks");
+      setLoading(true);
       await contract.createCommunity(
         data.name,
         data.guidelines,
         "0x6865790000000000000000000000000000000000000000000000000000000000"
       );
-      toast.success("🦄 successfully created community!", {
-        position: "bottom-center",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+      await getAllCommunities(contract).then(() => {
+        setLoading(false);
+        toast.success("🦄 successfully created community!", {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       });
-      await getAllCommunities(contract);
     } catch (error) {
       console.log(error);
     }

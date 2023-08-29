@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "../../../context/user_context";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const { user_address, user_name, register } = useContext(UserContext);
@@ -45,7 +46,7 @@ const Home = () => {
           Project Manual
         </div>
         <div className="text-gray-500">
-          <p className="mb-3 text-gray-500 dark:text-gray-400 first-line:uppercase first-line:tracking-widest first-letter:text-7xl first-letter:font-bold first-letter:text-gray-900 dark:first-letter:text-gray-100 first-letter:mr-3 first-letter:float-left">
+          <p className="mb-3 text-gray-200 dark:text-gray-200 first-line:uppercase first-line:tracking-widest first-letter:text-7xl first-letter:font-bold first-letter:text-gray-900 dark:first-letter:text-gray-100 first-letter:mr-3 first-letter:float-left">
             Our undertaking involves creating a web messaging application
             carefully customized to fulfill the requirements of individuals with
             disabilities. Our goal is to guarantee a genuinely inclusive
@@ -67,12 +68,12 @@ const Home = () => {
           ) : user_name ? (
             <>
               <div>
-                <a
-                  href="/chat/direct_message"
+                <Link
+                  to="/chat/direct_message"
                   className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
                 >
                   Enter chat room
-                </a>
+                </Link>
               </div>
             </>
           ) : (

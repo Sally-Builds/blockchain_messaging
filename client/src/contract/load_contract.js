@@ -14,13 +14,18 @@ export const loadContract = async (name) => {
     const provider = new ethers.providers.Web3Provider(eth_provider);
     if (provider) {
       const account = await eth_provider.request({ method: "eth_accounts" });
-      address = account[0];
-      const signer = provider.getSigner();
-      contract = new ethers.Contract(
-        Artifact.networks[NETWORK_ID].address,
-        Artifact.abi,
-        signer
-      );
+      // if (account.length <= 0) {
+      //   window.ethereum.enable();
+      // }
+      if (account.length > 0) {
+        address = account[0] || "";
+        const signer = provider.getSigner();
+        contract = new ethers.Contract(
+          Artifact.networks[NETWORK_ID].address,
+          Artifact.abi,
+          signer
+        );
+      }
     }
   } catch (e) {
     console.log(e);

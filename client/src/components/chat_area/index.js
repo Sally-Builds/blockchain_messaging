@@ -1,18 +1,59 @@
-import React, { useState, useContext, Fragment } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useContext, Fragment } from "react";
 import { CommunityContext } from "../../context/community_context";
 import { UserContext } from "../../context/user_context";
+import { FriendContext } from "../../context/friend_context";
 import { Dialog, Transition } from "@headlessui/react";
 import "./index.css";
 
 const ChatArea = ({ title }) => {
   const { CommunityMessages, myCommunity, sendMessage, communityMembers } =
     useContext(CommunityContext);
-  const navigate = useNavigate();
 
-  const { user_address, getAFriend } = useContext(UserContext);
+  const { user_address, isAdmin } = useContext(UserContext);
+  const { addFriend, friends } = useContext(FriendContext);
   let [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [members, setMembers] = useState([]);
+
+  useEffect(() => {
+    const fn = () => {
+      let arr = [];
+
+      if (communityMembers.length > 0) {
+        communityMembers.forEach((el, i) => {
+          let data = { ...el };
+          if (friends.length > 0) {
+            let check = friends.filter((e) => e.user === el.member_address);
+            if (check.length > 0) {
+              data.isFriend = true;
+              data.isMe = false;
+            } else {
+              data.isFriend = false;
+              //check if community member is current user
+              if (el.member_address.toLowerCase() === user_address) {
+                data.isMe = true;
+              } else {
+                data.isMe = false;
+              }
+            }
+          } else {
+            data.isFriend = false;
+            if (i != 0) {
+              if (el.member_address.toLowerCase() === user_address) {
+                data.isMe = true;
+              } else {
+                data.isMe = false;
+              }
+            }
+          }
+          arr.push(data);
+        });
+      }
+      setMembers(arr);
+    };
+
+    fn();
+  }, [friends, communityMembers, user_address]);
 
   function closeModal() {
     setIsOpen(false);
@@ -20,11 +61,6 @@ const ChatArea = ({ title }) => {
 
   function openModal() {
     setIsOpen(true);
-  }
-
-  function setTempFriend(user) {
-    getAFriend(user);
-    navigate("/chat/direct_message");
   }
 
   const send = async (e) => {
@@ -216,44 +252,67 @@ const ChatArea = ({ title }) => {
                   >
                     Community Members ({communityMembers.length})
                   </Dialog.Title>
-                  <hr className="p-2" />
-                  <div className="mt-2">
-                    <ul>
-                      {communityMembers.length > 0 && (
-                        <>
-                          {communityMembers.map((el, i) => (
-                            <li
-                              className="py-3 sm:py-4"
-                              key={i}
-                              onClick={() => setTempFriend(el)}
-                            >
-                              <div className="flex items-center space-x-4">
-                                <div className="flex-shrink-0">
-                                  <img
-                                    className="w-8 h-8 rounded-full"
-                                    src="/default.jpg"
-                                    alt="Neil"
-                                  />
+                  <div className="max-w-sm mx-auto mt-4">
+                    {communityMembers.length > 0 && (
+                      <>
+                        {members.map((el, i) => (
+                          <div
+                            key={i}
+                            className="p-4 flex items-center justify-between border-t cursor-pointer hover:bg-gray-200"
+                          >
+                            <div className="flex items-center">
+                              <img
+                                className="rounded-full h-10 w-10"
+                                src="/default.jpg"
+                                alt=""
+                              />
+                              <div className="ml-2 flex flex-col">
+                                <div className="leading-snug text-sm text-gray-900 font-bold">
+                                  {el.name}
                                 </div>
-                                <div className="min-w-0">
-                                  <div className="text-sm font-semibold text-gray-900 truncate dark:text-white">
-                                    {el.name}
-                                  </div>
-                                  <div className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                    <button
-                                      href="/chat/direct_message"
-                                      className="bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white px-4 border border-blue-500 hover:border-transparent rounded"
-                                    >
-                                      Add Friend
-                                    </button>
-                                  </div>
+                                <div className="leading-snug text-xs text-gray-600">
+                                  @
+                                  {`${el.member_address.replace(
+                                    /^(.{7}).{2,}/,
+                                    "$1…"
+                                  )}`}
                                 </div>
                               </div>
-                            </li>
-                          ))}
-                        </>
-                      )}
-                    </ul>
+                            </div>
+                            {i === 0 ? (
+                              <span className="h-8 px-3 text-md font-bold text-blue-400 hover:bg-blue-100">
+                                admin
+                              </span>
+                            ) : (
+                              <>
+                                {el.isFriend ? (
+                                  <span className="h-8 px-3 text-md font-bold text-blue-400 hover:bg-blue-100">
+                                    friend
+                                  </span>
+                                ) : (
+                                  <>
+                                    {el.isMe ? (
+                                      <span className="h-8 px-3 text-md font-bold text-blue-400 hover:bg-blue-100">
+                                        me
+                                      </span>
+                                    ) : (
+                                      <button
+                                        onClick={() =>
+                                          addFriend(el.member_address)
+                                        }
+                                        className="h-8 px-3 text-md font-bold text-blue-400 border border-blue-400 rounded-full hover:bg-blue-100"
+                                      >
+                                        Add Friend
+                                      </button>
+                                    )}
+                                  </>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        ))}
+                      </>
+                    )}
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

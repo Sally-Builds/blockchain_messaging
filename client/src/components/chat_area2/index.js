@@ -48,13 +48,6 @@ const ChatArea2 = ({ friends, index }) => {
                   )}
                 </span>
               </div>
-              {/* <span className="text-lg text-gray-600">Junior Developer</span> */}
-
-              <div>
-                <button onClick={() => addFriend(friend.member_address)}>
-                  Add to friend List
-                </button>
-              </div>
             </div>
           </div>
         </div>

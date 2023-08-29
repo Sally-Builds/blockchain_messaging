@@ -1,10 +1,13 @@
 import React, { useContext } from "react";
 import { CommunityContext } from "../../context/community_context";
+import { UserContext } from "../../context/user_context";
 import Chat from "../chat_area";
 
 const Details = () => {
   const { community, communityMembers, joinCommunity, myCommunity } =
     useContext(CommunityContext);
+
+  const { isAdmin } = useContext(UserContext);
 
   const join = async (id) => {
     await joinCommunity(id);
@@ -25,14 +28,16 @@ const Details = () => {
                     {community.name}
                   </div>
                   <div className="text-sm pt-2">
-                    <button
-                      onClick={() => join(community.communityID)}
-                      className="bg-transparent hover:bg-blue-500 
+                    {!isAdmin && (
+                      <button
+                        onClick={() => join(community.communityID)}
+                        className="bg-transparent hover:bg-blue-500 
                       text-blue-700 font-bold hover:text-white 
                       py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                    >
-                      Join
-                    </button>
+                      >
+                        Join
+                      </button>
+                    )}
                   </div>
                 </div>
                 <hr className="pb-4" />
