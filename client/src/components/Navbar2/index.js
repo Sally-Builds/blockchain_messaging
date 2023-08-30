@@ -11,20 +11,20 @@ const NavBar = () => {
 
   return (
     <>
-      <div class="h-full">
+      <div className="h-full">
         {/* Nav */}
-        <div class="w-full flex items-center justify-between">
+        <div className="w-full flex items-center justify-between">
           <a
-            class="flex items-center p-2 text-indigo-400 no-underline hover:no-underline font-bold text-2xl lg:text-4xl"
+            className="flex items-center p-2 text-indigo-400 no-underline hover:no-underline font-bold text-2xl lg:text-4xl"
             href="/"
           >
             Aou
-            <span class="bg-clip-text text-transparent bg-gradient-to-r from-green-400 via-pink-500 to-purple-500">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-400 via-pink-500 to-purple-500">
               ra
             </span>
           </a>
 
-          <div class="flex w-1/2 justify-end content-center p-3">
+          <div className="flex w-1/2 justify-end content-center p-3">
             {user_address ? (
               <>
                 {user_name ? (
@@ -33,7 +33,7 @@ const NavBar = () => {
                             bg-blue-100 flex flex-row text-blue-800 text-xs font-medium mr-2 px-2.5 py-2.5 rounded dark:bg-blue-900 dark:text-blue-300"
                   >
                     <img
-                      class="w-10 h-10 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500"
+                      className="w-10 h-10 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500"
                       src="/default.jpg"
                       alt="Bordered avatar"
                     />
