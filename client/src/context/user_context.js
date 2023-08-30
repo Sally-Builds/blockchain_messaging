@@ -19,19 +19,33 @@ const UserContextProvider = ({ children }) => {
       try {
         const result = await loadContract("_User");
         setContract(result.contract);
-        if (result.address) {
+        if (result.address && result.contract) {
           setUserAddress(result.address);
           await get(result.contract);
           await checkIfAdmin(result.contract, result.address);
-          console.log(user_address);
+        } else {
+          setUserAddress("");
         }
         setLoading(false);
       } catch (error) {
         console.log(error);
       }
     };
+
+    // window.ethereum
+    //   .request({
+    //     method: "eth_accounts",
+    //     // method: "eth_requestAccounts",
+    //   })
+    //   .then(async (addresses) => {
+    //     // setUserAddress(addresses[0]);
+    //     console.log(addresses, "yield");
+    //     // getMe();
+    //   });
+
     loadMyContract();
-  }, [setUserAddress, user_address]);
+    // }, []);
+  }, [user_address, contract]);
 
   // const loadMyContract = async () => {
   //   setLoading(true);
@@ -49,13 +63,11 @@ const UserContextProvider = ({ children }) => {
   //connect metamask to network
   const joinNetwork = async () => {
     try {
+      setLoading(true);
       const provider = await detectEthereumProvider();
 
-      console.log(provider);
       if (provider) {
         console.log("Ethereum successfully detected!");
-        window.location.reload();
-
         provider
           .request({
             // method: "eth_accounts",
@@ -63,14 +75,11 @@ const UserContextProvider = ({ children }) => {
           })
           .then(async (addresses) => {
             setUserAddress(addresses[0]);
+            setLoading(false);
             // getMe();
-            setTimeout(() => {
-              window.location.reload();
-            }, 3000);
           })
           .catch((e) => window.location.reload);
       } else {
-        console.log("download metamask");
         toast.success("🦄 Download Metamask!", {
           position: "bottom-center",
           autoClose: 5000,
@@ -84,33 +93,38 @@ const UserContextProvider = ({ children }) => {
         window.location.reload();
       }
     } catch (error) {
+      setLoading(false);
       window.location.reload();
     }
   };
 
   const register = async (name, age) => {
     try {
-      console.log("here");
       setLoading(true);
       const res = await contract.register(name, "Public key encryption");
-      console.log(res);
-      setLoading(false);
-      window.location.reload();
+      res.wait().then(async () => {
+        await getMe();
+        setLoading(false);
+      });
     } catch (error) {
+      setUserName("");
+      setUserAddress("");
       console.log(error); // prints "This is error message"
     }
   };
 
   const getMe = async () => {
     const res = await contract.getMe();
-    console.log(res);
     setUserName(res.name);
   };
 
   const get = async (contract) => {
     const res = await contract.getMe();
-    console.log(res);
-    setUserName(res.name);
+    if (res.name) {
+      setUserName(res.name);
+    } else {
+      setUserName("");
+    }
   };
 
   const checkIfAdmin = async (contract, address) => {
@@ -119,13 +133,11 @@ const UserContextProvider = ({ children }) => {
     if (result) {
       setUserName("admin");
     }
-    console.log();
     setLoading(false);
   };
 
   const getAFriend = async (user) => {
     if (user.member_address.toLowerCase() !== user_address) {
-      console.log(user);
       setFriend(user);
     }
   };

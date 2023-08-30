@@ -21,7 +21,6 @@ import Terms from "../container/Views/terms";
 
 const Router = () => {
   const { isLoading } = useContext(UserContext);
-  console.log(isLoading);
   return (
     <>
       {isLoading ? (

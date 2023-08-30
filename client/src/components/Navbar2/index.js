@@ -2,8 +2,7 @@ import React, { useContext } from "react";
 import { UserContext } from "../../context/user_context";
 
 const NavBar = () => {
-  const { joinNetwork, getMe, user_name, user_address } =
-    useContext(UserContext);
+  const { joinNetwork, user_name, user_address } = useContext(UserContext);
 
   const join = async () => {
     await joinNetwork();
