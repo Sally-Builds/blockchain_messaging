@@ -45,8 +45,6 @@ const Router = () => {
               <Route path="/" element={<LandingLayout />}>
                 <Route path="" element={<Home2 />} />
                 <Route path="/terms_and_conditions" element={<Terms />} />
-
-                {/* <Route path="/chat" element={<Chat />} /> */}
               </Route>
 
               <Route path="/chat/community" element={<ChatLayout />}>

@@ -14,11 +14,17 @@ const FriendContextProvider = ({ children }) => {
   //contract
   useEffect(() => {
     const loadMyContract = async () => {
-      const result = await loadContract("_Friend");
-      setContract(result.contract);
-      if (result.contract) {
-        get(result.contract);
-        //   getMyCommunity(result.contract);
+      try {
+        const result = await loadContract("_Friend");
+        setContract(result.contract);
+        if (result.contract) {
+          get(result.contract);
+          //   getMyCommunity(result.contract);
+        }
+      } catch (error) {
+        setLoading(true);
+        window.ethereum.reload();
+        console.log(error);
       }
     };
 

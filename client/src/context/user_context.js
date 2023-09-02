@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { loadContract } from "../contract/load_contract";
+import { Outlet, Navigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export const UserContext = createContext(null);
@@ -28,6 +29,8 @@ const UserContextProvider = ({ children }) => {
         }
         setLoading(false);
       } catch (error) {
+        setLoading(true);
+        window.location.replace("/");
         console.log(error);
       }
     };
@@ -44,6 +47,13 @@ const UserContextProvider = ({ children }) => {
     //   });
 
     loadMyContract();
+
+    if (window.ethereum) {
+      window.ethereum.on("accountsChanged", (accounts) => {
+        setLoading(true);
+        // window.location.reload();
+      });
+    }
     // }, []);
   }, [user_address, contract]);
 

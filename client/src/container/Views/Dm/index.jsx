@@ -9,7 +9,6 @@ const Index = () => {
   const { friend } = useContext(UserContext);
   const [index, setIndex] = useState([0]);
 
-  console.log(friends, "from frin");
 
   const set = (i) => {
     setIndex(i);

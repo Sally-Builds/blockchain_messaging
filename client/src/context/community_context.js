@@ -60,6 +60,7 @@ const CommunityContextProvider = ({ children }) => {
         setCommunityMembers(members);
       }
     } catch (error) {
+      window.location.reload();
       console.log(error);
     }
   };
