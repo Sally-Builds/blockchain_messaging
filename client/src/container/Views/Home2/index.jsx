@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "../../../context/user_context";
 import { Link } from "react-router-dom";
+// import Speech from "../../../components/speech";
 
 const Home = () => {
   const { user_address, user_name, register } = useContext(UserContext);
@@ -11,7 +12,7 @@ const Home = () => {
     e.preventDefault();
 
     //submit application
-    register(name, "age");
+    register(name);
   };
   return (
     // <!--Main-->
@@ -108,38 +109,7 @@ const Home = () => {
 
       {/* <!--Right Col--> */}
       <div className="w-full xl:w-3/5 p-12 overflow-hidden"></div>
-
-      {/* <div className="mx-auto md:pt-16">
-        <p className="text-blue-400 font-bold pb-8 lg:pb-6 text-center">
-          Download our app:
-        </p>
-        <div className="flex w-full justify-center md:justify-start pb-24 lg:pb-0 fade-in">
-          <img
-            src="App Store.svg"
-            alt="app_store"
-            className="h-12 pr-12 transform hover:scale-125 duration-300 ease-in-out"
-          />
-          <img
-            alt="app_store"
-            src="Play Store.svg"
-            className="h-12 transform hover:scale-125 duration-300 ease-in-out"
-          />
-        </div>
-      </div> */}
-
-      {/* <!--Footer--> */}
-      <div className="w-full pt-16 pb-6 text-sm text-center md:text-left fade-in">
-        {/* <a className="text-gray-500 no-underline hover:no-underline" href="/">
-          &copy; App 2020
-        </a>
-        - Template by
-        <a
-          className="text-gray-500 no-underline hover:no-underline"
-          href="https://www.tailwindtoolbox.com"
-        >
-          TailwindToolbox.com
-        </a> */}
-      </div>
+      <div className="w-full pt-16 pb-6 text-sm text-center md:text-left fade-in"></div>
     </div>
   );
 };

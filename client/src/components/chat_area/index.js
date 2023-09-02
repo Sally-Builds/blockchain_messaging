@@ -3,6 +3,9 @@ import { CommunityContext } from "../../context/community_context";
 import { UserContext } from "../../context/user_context";
 import { FriendContext } from "../../context/friend_context";
 import { Dialog, Transition } from "@headlessui/react";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 import "./index.css";
 
 const ChatArea = ({ title }) => {
@@ -14,6 +17,12 @@ const ChatArea = ({ title }) => {
   let [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [members, setMembers] = useState([]);
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition,
+  } = useSpeechRecognition();
 
   useEffect(() => {
     const fn = () => {
@@ -52,8 +61,16 @@ const ChatArea = ({ title }) => {
       setMembers(arr);
     };
 
+    if (transcript) {
+      setMessage(transcript);
+    }
+
     fn();
-  }, [friends, communityMembers, user_address]);
+  }, [friends, communityMembers, user_address, transcript]);
+
+  if (!browserSupportsSpeechRecognition) {
+    return <span>Browser doesn't support speech recognition.</span>;
+  }
 
   function closeModal() {
     setIsOpen(false);
@@ -84,7 +101,7 @@ const ChatArea = ({ title }) => {
       <div className="flex-1 p:2 sm:p-6 justify-between flex flex-col h-screen">
         <div className="flex items-center justify-between flex-wrap py-3 border-b-2 border-gray-200">
           <div className="text-2xl mt-1">
-            <span className="text-gray-700 mr-3">{title}</span>
+            <span className="text-gray-300 mr-3">{title}</span>
           </div>
           <div>
             <button
@@ -121,7 +138,7 @@ const ChatArea = ({ title }) => {
                           </div>
                         </div>
                         <img
-                          src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
+                          src="/default.jpg"
                           alt="My profile"
                           className="w-6 h-6 rounded-full order-2"
                         />
@@ -140,7 +157,7 @@ const ChatArea = ({ title }) => {
                           </div>
                         </div>
                         <img
-                          src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
+                          src="/default.jpg"
                           alt="My profile"
                           className="w-6 h-6 rounded-full order-1"
                         />
@@ -189,10 +206,31 @@ const ChatArea = ({ title }) => {
         <div className="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
           <form onSubmit={send}>
             <div className="relative flex">
+              <span class="absolute inset-y-0 flex items-center">
+                <button
+                  type="button"
+                  className={
+                    listening
+                      ? `inline-flex animate-ping  opacity-75 items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out
+                  text-gray-500 hover:bg-gray-300 focus:outline-none`
+                      : `inline-flex items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out
+                  text-gray-500 hover:bg-gray-300 focus:outline-none`
+                  }
+                  onClick={SpeechRecognition.startListening}
+                >
+                  <i
+                    className={
+                      listening
+                        ? `fa-solid fa-microphone text-blue-500 border`
+                        : "fa-solid fa-microphone"
+                    }
+                  ></i>
+                </button>
+              </span>
               <input
                 type="text"
                 placeholder="Write your message!"
-                className="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-6 bg-gray-200 rounded-md py-3"
+                className="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-md py-3"
                 value={message}
                 onChange={(e) => {
                   setMessage(e.target.value);

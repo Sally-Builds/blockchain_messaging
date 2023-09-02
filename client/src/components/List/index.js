@@ -73,7 +73,7 @@ const List = ({ tabChange }) => {
                       Michael Gough
                     </p>
                     <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                      Lorem dolor sit amet the quick brown fox jumps
+                      {/* Lorem dolor sit amet the quick brown fox jumps */}
                     </p>
                   </div>
                   <div className="inline-flex items-center font-thin text-xs underline text-gray-900 dark:text-white">

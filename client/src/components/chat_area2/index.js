@@ -1,15 +1,67 @@
-import React, { useState, useContext, Fragment } from "react";
+import React, { useState, useContext, Fragment, useEffect } from "react";
 import { UserContext } from "../../context/user_context";
 import { FriendContext } from "../../context/friend_context";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 import "./index.css";
 
 const ChatArea2 = ({ friends, index }) => {
-  const { user_address, friend } = useContext(UserContext);
-  const { addFriend, sendMessage } = useContext(FriendContext);
+  const { user_address } = useContext(UserContext);
+  const { sendMessage } = useContext(FriendContext);
   const [message, setMessage] = useState("");
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition,
+  } = useSpeechRecognition();
+
+  useEffect(() => {
+    if (transcript) {
+      setMessage(transcript);
+    }
+    // if (transcript) {
+    //   let wordArr = transcript.split(" ");
+    //   if (wordArr[wordArr.length - 1] == "send") {
+    //     console.log(arrToString(transcript), "arrto string");
+    //     setMessage(arrToString(transcript));
+    //     sendMic();
+    //   }
+    // }
+  }, [transcript]);
+
+  if (!browserSupportsSpeechRecognition) {
+    return <span>Browser doesn't support speech recognition.</span>;
+  }
+
+  // const arrToString = (arr) => {
+  //   let sentence = "";
+  //   if (arr.length > 0) {
+  //     for (let i = 0; i < arr.length; i++) {
+  //       sentence = sentence + arr[i];
+  //     }
+  //   }
+  //   return sentence;
+  // };
+
+  // const sendMic = async () => {
+  //   let msg = {
+  //     msg: message,
+  //     friend: friends[index].user,
+  //   };
+  //   try {
+  //     await sendMessage(msg);
+  //   } catch (error) {
+  //     console.log("catch");
+  //     console.log(error);
+  //   }
+  // };
 
   const send = async (e) => {
-    e.preventDefault();
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
     const msg = {
       msg: message,
       friend: friends[index].user,
@@ -71,7 +123,7 @@ const ChatArea2 = ({ friends, index }) => {
                           </div>
                         </div>
                         <img
-                          src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
+                          src="/default.jpg"
                           alt="My profile"
                           className="w-6 h-6 rounded-full order-2"
                         />
@@ -90,7 +142,7 @@ const ChatArea2 = ({ friends, index }) => {
                           </div>
                         </div>
                         <img
-                          src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
+                          src="/default.jpg"
                           alt="My profile"
                           className="w-6 h-6 rounded-full order-1"
                         />
@@ -140,10 +192,31 @@ const ChatArea2 = ({ friends, index }) => {
         <div className="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
           <form onSubmit={send}>
             <div className="relative flex">
+              <span class="absolute inset-y-0 flex items-center">
+                <button
+                  type="button"
+                  className={
+                    listening
+                      ? `inline-flex animate-ping  opacity-75 items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out
+                  text-gray-500 hover:bg-gray-300 focus:outline-none`
+                      : `inline-flex items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out
+                  text-gray-500 hover:bg-gray-300 focus:outline-none`
+                  }
+                  onClick={SpeechRecognition.startListening}
+                >
+                  <i
+                    className={
+                      listening
+                        ? `fa-solid fa-microphone text-blue-500 border`
+                        : "fa-solid fa-microphone"
+                    }
+                  ></i>
+                </button>
+              </span>
               <input
                 type="text"
                 placeholder="Write your message!"
-                className="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-6 bg-gray-200 rounded-md py-3"
+                className="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-md py-3"
                 value={message}
                 onChange={(e) => {
                   setMessage(e.target.value);

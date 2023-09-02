@@ -81,6 +81,7 @@ const FriendContextProvider = ({ children }) => {
         })
         .catch((e) => console.log(e));
     } catch (error) {
+      window.location.reload();
       console.log(error);
     }
   };

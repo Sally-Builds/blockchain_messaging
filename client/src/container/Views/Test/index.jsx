@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { CommunityContext } from "../../../context/community_context";
 import { UserContext } from "../../../context/user_context";
 import CreateCommunityDialog from "../../../components/create_community";
@@ -12,11 +12,10 @@ const Index = () => {
     getCommunity,
     myCommunity,
     community,
-    communityMembers,
     CommunityMessages,
   } = useContext(CommunityContext);
 
-  const { isAdmin, user_name } = useContext(UserContext);
+  const { isAdmin } = useContext(UserContext);
 
   const setCommunity = async (id) => {
     await getCommunity(id);
@@ -48,9 +47,9 @@ const Index = () => {
             </ul>
           </div>
 
-          {/* HERE */}
+          {/* List communities */}
           <div className="rounded-xl bg-white dark:bg-sky-950 p-3 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2">
-            {myCommunity ==
+            {myCommunity ===
               "0x0000000000000000000000000000000000000000000000000000000000000000" &&
               !isAdmin && (
                 <>
@@ -88,7 +87,7 @@ const Index = () => {
                 </>
               )}
 
-            {myCommunity !=
+            {myCommunity !==
               "0x0000000000000000000000000000000000000000000000000000000000000000" &&
               !isAdmin && (
                 <>
@@ -152,10 +151,19 @@ const Index = () => {
         </div>
 
         <div className="col-span-8">
-          {myCommunity !=
+          {myCommunity !==
             "0x0000000000000000000000000000000000000000000000000000000000000000" &&
           !isAdmin ? (
-            <ChatArea title={community.name} />
+            <div
+              style={{
+                backgroundImage: "url(/whasapp.jpeg)",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+              }}
+            >
+              <ChatArea title={community.name} />
+            </div>
           ) : (
             <Details />
           )}

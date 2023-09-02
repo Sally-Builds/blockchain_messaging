@@ -11,7 +11,7 @@ const Home = () => {
     e.preventDefault();
 
     //submit application
-    register(name, "age");
+    register(name);
   };
   return (
     <div className="p-4 flex flex-col">

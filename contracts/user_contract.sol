@@ -86,8 +86,4 @@ contract _User {
         }
         return false;
     }
-
-    function okay() public pure returns (uint) {
-        return 4 * 5;
-    }
 }

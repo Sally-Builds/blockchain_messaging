@@ -9,6 +9,8 @@ const Index = () => {
   const { friend } = useContext(UserContext);
   const [index, setIndex] = useState([0]);
 
+  console.log(friends, "from frin");
+
   const set = (i) => {
     setIndex(i);
   };
@@ -46,7 +48,7 @@ const Index = () => {
                     <div className="flex-shrink-0">
                       <img
                         className="w-8 h-8 rounded-full"
-                        src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+                        src="/default.jpg"
                         alt="Neil"
                       />
                     </div>
@@ -55,7 +57,8 @@ const Index = () => {
                         {friend.name}
                       </p>
                       <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                        Lorem dolor sit amet the quick brown fox jumps
+                        {/* Lorem dolor sit amet the quick brown fox jumps */}
+                        {/* friend.messages[friend.messages.le] */}
                       </p>
                     </div>
                     <div className="inline-flex items-center font-thin text-xs underline text-gray-900 dark:text-white">
@@ -72,7 +75,7 @@ const Index = () => {
                         <div className="flex-shrink-0">
                           <img
                             className="w-8 h-8 rounded-full"
-                            src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+                            src="/default.jpg"
                             alt="Neil"
                           />
                         </div>

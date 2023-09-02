@@ -98,7 +98,7 @@ const UserContextProvider = ({ children }) => {
     }
   };
 
-  const register = async (name, age) => {
+  const register = async (name) => {
     try {
       setLoading(true);
       const res = await contract.register(name, "Public key encryption");

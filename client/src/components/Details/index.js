@@ -73,7 +73,7 @@ const Details = () => {
                                 {el.name}
                               </p>
                               <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                Lorem dolor sit amet the quick brown fox jumps
+                                {/* Lorem dolor sit amet the quick brown fox jumps */}
                               </p>
                             </div>
                           </div>
