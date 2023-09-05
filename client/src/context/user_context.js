@@ -1,7 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { loadContract } from "../contract/load_contract";
-import { Outlet, Navigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export const UserContext = createContext(null);
@@ -11,6 +10,7 @@ const UserContextProvider = ({ children }) => {
   const [contract, setContract] = useState("");
   const [isAdmin, setisAdmin] = useState(false);
   const [isLoading, setLoading] = useState(true);
+  const [myFlaggedWords, setMyFlaggedWords] = useState([]);
 
   const [friend, setFriend] = useState("");
 
@@ -24,6 +24,7 @@ const UserContextProvider = ({ children }) => {
           setUserAddress(result.address);
           await get(result.contract);
           await checkIfAdmin(result.contract, result.address);
+          await getFlaggedWords(result.contract);
         } else {
           setUserAddress("");
         }
@@ -32,43 +33,20 @@ const UserContextProvider = ({ children }) => {
         setLoading(true);
         window.location.replace("/");
         console.log(error);
+        setLoading(false);
       }
     };
-
-    // window.ethereum
-    //   .request({
-    //     method: "eth_accounts",
-    //     // method: "eth_requestAccounts",
-    //   })
-    //   .then(async (addresses) => {
-    //     // setUserAddress(addresses[0]);
-    //     console.log(addresses, "yield");
-    //     // getMe();
-    //   });
 
     loadMyContract();
 
     if (window.ethereum) {
       window.ethereum.on("accountsChanged", (accounts) => {
-        setLoading(true);
+        // setLoading(true);
         // window.location.reload();
       });
     }
     // }, []);
   }, [user_address, contract]);
-
-  // const loadMyContract = async () => {
-  //   setLoading(true);
-  //   console.log("reche here");
-  //   const result = await loadContract("_User");
-  //   setContract(result.contract);
-  //   if (result.address) {
-  //     setUserAddress(result.address);
-  //     await get(result.contract);
-  //     await checkIfAdmin(result.contract, result.address);
-  //   }
-  //   setLoading(true);
-  // };
 
   //connect metamask to network
   const joinNetwork = async () => {
@@ -152,6 +130,27 @@ const UserContextProvider = ({ children }) => {
     }
   };
 
+  const flagWords = async (words) => {
+    try {
+      setLoading(true);
+      const result = await contract.addWords(words);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      // window.location.reload();
+    }
+  };
+
+  const getFlaggedWords = async (contract) => {
+    try {
+      const res = await contract["getFlaggedWords()"]();
+      setMyFlaggedWords(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const value = {
     joinNetwork,
     user_address,
@@ -163,6 +162,8 @@ const UserContextProvider = ({ children }) => {
     getAFriend,
     isLoading,
     setLoading,
+    flagWords,
+    myFlaggedWords,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

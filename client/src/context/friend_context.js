@@ -65,9 +65,15 @@ const FriendContextProvider = ({ children }) => {
   };
 
   const addFriend = async (user_address) => {
-    const result = await contract.addFriend(user_address);
-    result.wait();
-    await getFriends(contract);
+    try {
+      setLoading(true);
+      const result = await contract.addFriend(user_address);
+      result.wait();
+      await getFriends(contract);
+      setLoading(false);
+    } catch (error) {
+      window.location.reload();
+    }
   };
 
   const sendMessage = async (data) => {

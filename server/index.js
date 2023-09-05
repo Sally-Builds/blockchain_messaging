@@ -35,7 +35,7 @@ app.get("/register", (req, res) => {
   const rsa = rsaKeys();
   const dbSecretKey = rsa.privateKey;
   try {
-    const filePath = `${__dirname}/public/${req.body.address}.ppk`;
+    const filePath = `${__dirname}/public/${req.body.address}.pem`;
     fs.writeFileSync(filePath, dbSecretKey);
     console.log(dbSecretKey);
     res.status(201).json({
@@ -51,7 +51,7 @@ app.put("/decrypt", (req, res) => {
   //read the private key
   let dbSecretKey;
   try {
-    dbSecretKey = fs.readFileSync(`${body.address}.ppk`);
+    dbSecretKey = fs.readFileSync(`${body.address}.pem`);
     console.log(body.encryptedMessage);
     console.log(resDecrypt(body.encryptedMessage, dbSecretKey));
     res.status(200).json({

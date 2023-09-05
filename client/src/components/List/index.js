@@ -64,7 +64,7 @@ const List = ({ tabChange }) => {
                   <div className="flex-shrink-0">
                     <img
                       className="w-8 h-8 rounded-full"
-                      src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+                      src="/default.jpg"
                       alt="Neil"
                     />
                   </div>

@@ -1,62 +1,40 @@
 import React, { useState, useContext, Fragment, useEffect } from "react";
 import { UserContext } from "../../context/user_context";
 import { FriendContext } from "../../context/friend_context";
+import { Dialog, Transition } from "@headlessui/react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import "./index.css";
+import Filter from "bad-words";
 
 const ChatArea2 = ({ friends, index }) => {
-  const { user_address } = useContext(UserContext);
+  const { user_address, myFlaggedWords } = useContext(UserContext);
   const { sendMessage } = useContext(FriendContext);
   const [message, setMessage] = useState("");
-  const {
-    transcript,
-    listening,
-    resetTranscript,
-    browserSupportsSpeechRecognition,
-  } = useSpeechRecognition();
+  const { transcript, listening, browserSupportsSpeechRecognition } =
+    useSpeechRecognition();
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
   useEffect(() => {
     if (transcript) {
       setMessage(transcript);
     }
-    // if (transcript) {
-    //   let wordArr = transcript.split(" ");
-    //   if (wordArr[wordArr.length - 1] == "send") {
-    //     console.log(arrToString(transcript), "arrto string");
-    //     setMessage(arrToString(transcript));
-    //     sendMic();
-    //   }
-    // }
   }, [transcript]);
+
+  const filter = new Filter({ list: myFlaggedWords });
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
   }
 
-  // const arrToString = (arr) => {
-  //   let sentence = "";
-  //   if (arr.length > 0) {
-  //     for (let i = 0; i < arr.length; i++) {
-  //       sentence = sentence + arr[i];
-  //     }
-  //   }
-  //   return sentence;
-  // };
+  function closeViewModal() {
+    setIsOpenModal(false);
+  }
 
-  // const sendMic = async () => {
-  //   let msg = {
-  //     msg: message,
-  //     friend: friends[index].user,
-  //   };
-  //   try {
-  //     await sendMessage(msg);
-  //   } catch (error) {
-  //     console.log("catch");
-  //     console.log(error);
-  //   }
-  // };
+  const openViewModal = () => {
+    setIsOpenModal(true);
+  };
 
   const send = async (e) => {
     if (e.preventDefault) {
@@ -70,7 +48,6 @@ const ChatArea2 = ({ friends, index }) => {
     try {
       await sendMessage(msg);
     } catch (error) {
-      console.log("catch");
       console.log(error);
     }
   };
@@ -102,6 +79,14 @@ const ChatArea2 = ({ friends, index }) => {
               </div>
             </div>
           </div>
+          <div className="group bottom-10 right-10 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-danger-600 uppercase leading-normal text-white">
+            <button
+              onClick={openViewModal}
+              className="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 "
+            >
+              <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+          </div>
         </div>
 
         {friends.length > 0 && friends[index].messages.length > 0 ? (
@@ -118,7 +103,13 @@ const ChatArea2 = ({ friends, index }) => {
                         <div className="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
                           <div>
                             <span className="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white ">
-                              {el._msg}
+                              {filter.clean(el._msg)}
+                              {filter.clean(el._msg).includes("**") && (
+                                <>
+                                  {" "}
+                                  <i class="fa-solid fa-eye"></i>
+                                </>
+                              )}
                             </span>
                           </div>
                         </div>
@@ -137,7 +128,7 @@ const ChatArea2 = ({ friends, index }) => {
                         <div className="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
                           <div>
                             <span className="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">
-                              {el._msg}
+                              {filter.clean(el._msg)}
                             </span>
                           </div>
                         </div>
@@ -152,18 +143,6 @@ const ChatArea2 = ({ friends, index }) => {
                 )}
               </>
             ))}
-            {/* <div className="flex mb-2">
-            <div
-              className="rounded py-2 px-3"
-              style={{ backgroundColor: "#F2F2F2" }}
-            >
-              <p className="text-sm text-teal">Sylverter Stallone</p>
-              <p className="text-sm mt-1">
-                Hi everyone! Glad you could join! I am making a new movie.
-              </p>
-              <p className="text-right text-xs text-grey-dark mt-1">12:45 pm</p>
-            </div>
-          </div> */}
           </div>
         ) : (
           <>
@@ -242,6 +221,86 @@ const ChatArea2 = ({ friends, index }) => {
           </form>
         </div>
       </div>
+
+      {friends[index] && (
+        <>
+          <Transition appear show={isOpenModal} as={Fragment}>
+            <Dialog as="div" className="relative z-10" onClose={closeViewModal}>
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <div className="fixed inset-0 bg-black bg-opacity-25" />
+              </Transition.Child>
+
+              <div className="fixed inset-0 overflow-y-auto">
+                <div className="flex min-h-full items-center justify-center p-4 text-center">
+                  <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0 scale-95"
+                    enterTo="opacity-100 scale-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100 scale-100"
+                    leaveTo="opacity-0 scale-95"
+                  >
+                    <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-transparent p-6 text-left align-middle shadow-xl transition-all">
+                      <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16">
+                        <div class="px-6">
+                          <div class="flex flex-wrap justify-center">
+                            <div class="w-full px-4 flex justify-center">
+                              <div class="relative">
+                                <img
+                                  alt="..."
+                                  src="/default.jpg"
+                                  class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"
+                                />
+                              </div>
+                            </div>
+                            <div class="w-full px-4 text-center mt-20"></div>
+                          </div>
+                          <div class="text-center mt-6 mb-6">
+                            <h3 class="text-xl font-semibold leading-normal text-blueGray-700 mb-2">
+                              Name: {friends[index].name}
+                            </h3>
+                            <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
+                              <i class="fa-solid fa-wallet text-lg mr-2 text-blueGray-400"></i>
+                              Wallet address: {friends[index].user}
+                            </div>
+                            <div class="mb-2 text-blueGray-600 mt-10 break-all">
+                              <i class="fa-solid fa-flag mr-2 text-lg text-blueGray-400"></i>
+                              Flagged words -{" "}
+                              {friends[index].flaggedWords.length > 0 && (
+                                <>
+                                  {friends[index].flaggedWords.map((el, i) => (
+                                    <>
+                                      <span
+                                        key={i}
+                                        class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+                                      >
+                                        {el}
+                                      </span>
+                                    </>
+                                  ))}
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </Dialog.Panel>
+                  </Transition.Child>
+                </div>
+              </div>
+            </Dialog>
+          </Transition>
+        </>
+      )}
     </>
   );
 };

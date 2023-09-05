@@ -17,6 +17,7 @@ contract _Friend {
         address user;
         string name;
         bytes32 encryptionPub;
+        string[] flaggedWords;
     }
 
     mapping(address => address[]) friends;
@@ -43,6 +44,7 @@ contract _Friend {
             address user_address = friends[msg.sender][i];
             _friends[i].user = user_address;
             _friends[i].name = user.getUser(user_address).name;
+            _friends[i].flaggedWords = user.getFlaggedWords(user_address);
         }
 
         return _friends;

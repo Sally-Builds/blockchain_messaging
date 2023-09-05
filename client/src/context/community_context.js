@@ -115,6 +115,7 @@ const CommunityContextProvider = ({ children }) => {
 
   const joinCommunity = async (communityID) => {
     try {
+      setLoading(true);
       await contract.joinCommunity(communityID);
       toast.success("🦄 successfully joined community!", {
         position: "bottom-center",

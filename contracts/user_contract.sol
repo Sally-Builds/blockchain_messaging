@@ -7,7 +7,7 @@ contract _User {
         address user;
         string name;
         bytes32 encryptionPub;
-        // string encryptionPub;
+        string[] flaggedWords;
     }
 
     mapping(address => User) users;
@@ -85,5 +85,22 @@ contract _User {
             return true;
         }
         return false;
+    }
+
+    function addWords(string[] memory words) public {
+        string[] storage flaggedWords = users[msg.sender].flaggedWords;
+        for (uint i = 0; i < words.length; i++) {
+            flaggedWords.push(words[i]);
+        }
+    }
+
+    function getFlaggedWords() public view returns (string[] memory) {
+        return users[msg.sender].flaggedWords;
+    }
+
+    function getFlaggedWords(
+        address sender
+    ) public view returns (string[] memory) {
+        return users[sender].flaggedWords;
     }
 }

@@ -9,7 +9,6 @@ const Index = () => {
   const { friend } = useContext(UserContext);
   const [index, setIndex] = useState([0]);
 
-
   const set = (i) => {
     setIndex(i);
   };
@@ -39,7 +38,7 @@ const Index = () => {
           </div>
 
           {/* HERE */}
-          <div className="rounded-xl bg-white p-3 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2">
+          <div className="rounded-xl bg-white ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2">
             <ul>
               {friend && (
                 <li className="py-3 sm:py-4">
@@ -69,7 +68,11 @@ const Index = () => {
               {friends.length > 0 && (
                 <>
                   {friends.map((el, i) => (
-                    <li className="py-3 sm:py-4" key={i} onClick={() => set(i)}>
+                    <li
+                      className="sm:py-4 cursor-pointer hover:bg-slate-200 border-b"
+                      key={i}
+                      onClick={() => set(i)}
+                    >
                       <div className="flex items-center space-x-4">
                         <div className="flex-shrink-0">
                           <img
@@ -83,11 +86,11 @@ const Index = () => {
                             {el.name}
                           </p>
                           <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                            Lorem dolor sit amet the quick brown fox jumps
+                            {/* Lorem dolor sit amet the quick brown fox jumps */}
                           </p>
                         </div>
                         <div className="inline-flex items-center font-thin text-xs underline text-gray-900 dark:text-white">
-                          11:35AM
+                          {/* 11:35AM */}
                         </div>
                       </div>
                     </li>

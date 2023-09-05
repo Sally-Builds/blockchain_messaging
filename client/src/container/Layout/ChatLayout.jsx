@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Outlet, Navigate, useLocation } from "react-router-dom";
-import NavBar from "../../components/Navbar";
+import NavBar from "../../components/Navbar2";
 import CommunityContextProvider from "../../context/community_context";
 import FriendContextProvider from "../../context/friend_context";
 import { UserContext } from "../../context/user_context";
