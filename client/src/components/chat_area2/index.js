@@ -7,6 +7,7 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import "./index.css";
 import Filter from "bad-words";
+import { toast } from "react-toastify";
 
 const ChatArea2 = ({ friends, index }) => {
   const { user_address, myFlaggedWords } = useContext(UserContext);
@@ -22,7 +23,7 @@ const ChatArea2 = ({ friends, index }) => {
     }
   }, [transcript]);
 
-  const filter = new Filter({ list: myFlaggedWords });
+  const filter = new Filter();
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
@@ -44,6 +45,23 @@ const ChatArea2 = ({ friends, index }) => {
       msg: message,
       friend: friends[index].user,
     };
+    let messageArr = message.split(" ");
+    let isBadWord = messageArr.some((el) =>
+      friends[index].flaggedWords.includes(el)
+    );
+
+    if (isBadWord || filter.isProfane(message)) {
+      return toast.error("message contains flagged or profane words", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
 
     try {
       await sendMessage(msg);
@@ -84,7 +102,7 @@ const ChatArea2 = ({ friends, index }) => {
               onClick={openViewModal}
               className="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 "
             >
-              <i class="fa-solid fa-ellipsis-vertical"></i>
+              <i className="fa-solid fa-ellipsis-vertical"></i>
             </button>
           </div>
         </div>
@@ -95,7 +113,7 @@ const ChatArea2 = ({ friends, index }) => {
             className="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
           >
             {friends[index].messages.map((el, i) => (
-              <>
+              <div key={i}>
                 {`${el.sender.toLowerCase()}` === user_address ? (
                   <>
                     <div className="chat-message" key={i}>
@@ -103,13 +121,7 @@ const ChatArea2 = ({ friends, index }) => {
                         <div className="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
                           <div>
                             <span className="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white ">
-                              {filter.clean(el._msg)}
-                              {filter.clean(el._msg).includes("**") && (
-                                <>
-                                  {" "}
-                                  <i class="fa-solid fa-eye"></i>
-                                </>
-                              )}
+                              {el._msg}
                             </span>
                           </div>
                         </div>
@@ -123,12 +135,12 @@ const ChatArea2 = ({ friends, index }) => {
                   </>
                 ) : (
                   <>
-                    <div className="chat-message">
+                    <div className="chat-message" key={i}>
                       <div className="flex items-end">
                         <div className="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
                           <div>
                             <span className="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">
-                              {filter.clean(el._msg)}
+                              {el._msg}
                             </span>
                           </div>
                         </div>
@@ -141,7 +153,7 @@ const ChatArea2 = ({ friends, index }) => {
                     </div>
                   </>
                 )}
-              </>
+              </div>
             ))}
           </div>
         ) : (
@@ -171,7 +183,7 @@ const ChatArea2 = ({ friends, index }) => {
         <div className="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
           <form onSubmit={send}>
             <div className="relative flex">
-              <span class="absolute inset-y-0 flex items-center">
+              <span className="absolute inset-y-0 flex items-center">
                 <button
                   type="button"
                   className={
@@ -250,42 +262,40 @@ const ChatArea2 = ({ friends, index }) => {
                     leaveTo="opacity-0 scale-95"
                   >
                     <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-transparent p-6 text-left align-middle shadow-xl transition-all">
-                      <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16">
-                        <div class="px-6">
-                          <div class="flex flex-wrap justify-center">
-                            <div class="w-full px-4 flex justify-center">
-                              <div class="relative">
+                      <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16">
+                        <div className="px-6">
+                          <div className="flex flex-wrap justify-center">
+                            <div className="w-full px-4 flex justify-center">
+                              <div className="relative">
                                 <img
                                   alt="..."
                                   src="/default.jpg"
-                                  class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"
+                                  className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"
                                 />
                               </div>
                             </div>
-                            <div class="w-full px-4 text-center mt-20"></div>
+                            <div className="w-full px-4 text-center mt-20"></div>
                           </div>
-                          <div class="text-center mt-6 mb-6">
-                            <h3 class="text-xl font-semibold leading-normal text-blueGray-700 mb-2">
+                          <div className="text-center mt-6 mb-6">
+                            <h3 className="text-xl font-semibold leading-normal text-blueGray-700 mb-2">
                               Name: {friends[index].name}
                             </h3>
-                            <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
-                              <i class="fa-solid fa-wallet text-lg mr-2 text-blueGray-400"></i>
+                            <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
+                              <i className="fa-solid fa-wallet text-lg mr-2 text-blueGray-400"></i>
                               Wallet address: {friends[index].user}
                             </div>
-                            <div class="mb-2 text-blueGray-600 mt-10 break-all">
-                              <i class="fa-solid fa-flag mr-2 text-lg text-blueGray-400"></i>
+                            <div className="mb-2 text-blueGray-600 mt-10 break-all">
+                              <i className="fa-solid fa-flag mr-2 text-lg text-blueGray-400"></i>
                               Flagged words -{" "}
                               {friends[index].flaggedWords.length > 0 && (
                                 <>
                                   {friends[index].flaggedWords.map((el, i) => (
-                                    <>
-                                      <span
-                                        key={i}
-                                        class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
-                                      >
-                                        {el}
-                                      </span>
-                                    </>
+                                    <span
+                                      key={i}
+                                      className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+                                    >
+                                      {el}
+                                    </span>
                                   ))}
                                 </>
                               )}

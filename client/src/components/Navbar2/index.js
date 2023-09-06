@@ -85,7 +85,7 @@ const NavBar = () => {
                       />
                       <span className="p-3">{user_name}</span>
                     </button>
-                    <ul class="absolute z-0 flex translate-x-full flex-row items-center justify-center opacity-0 transition-all duration-500 ease-in-out group-hover:-translate-x-[75%] group-hover:opacity-100">
+                    <ul className="absolute z-0 flex translate-x-full flex-row items-center justify-center opacity-0 transition-all duration-500 ease-in-out group-hover:-translate-x-[75%] group-hover:opacity-100">
                       <li onClick={openFlagModal}>
                         <div
                           data-te-ripple-init
@@ -93,7 +93,7 @@ const NavBar = () => {
                           data-te-ripple-centered="true"
                           className="hover:scale-110 mx-5 mb-2 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-cyan-600 shadow-md hover:shadow-lg"
                         >
-                          <i class="fa-solid fa-flag"></i>
+                          <i className="fa-solid fa-flag"></i>
                         </div>
                       </li>
                       <li onClick={openViewModal}>
@@ -103,7 +103,7 @@ const NavBar = () => {
                           data-te-ripple-centered="true"
                           className="hover:scale-110 mx-5 mb-2 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-cyan-600 shadow-md hover:shadow-lg"
                         >
-                          <i class="fa-solid fa-user"></i>
+                          <i className="fa-solid fa-user"></i>
                         </div>
                       </li>
                     </ul>
@@ -159,42 +159,40 @@ const NavBar = () => {
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-transparent p-6 text-left align-middle shadow-xl transition-all">
-                  <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16">
-                    <div class="px-6">
-                      <div class="flex flex-wrap justify-center">
-                        <div class="w-full px-4 flex justify-center">
-                          <div class="relative">
+                  <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16">
+                    <div className="px-6">
+                      <div className="flex flex-wrap justify-center">
+                        <div className="w-full px-4 flex justify-center">
+                          <div className="relative">
                             <img
                               alt="..."
                               src="/default.jpg"
-                              class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"
+                              className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"
                             />
                           </div>
                         </div>
-                        <div class="w-full px-4 text-center mt-20"></div>
+                        <div className="w-full px-4 text-center mt-20"></div>
                       </div>
-                      <div class="text-center mt-6 mb-6">
-                        <h3 class="text-xl font-semibold leading-normal text-blueGray-700 mb-2">
+                      <div className="text-center mt-6 mb-6">
+                        <h3 className="text-xl font-semibold leading-normal text-blueGray-700 mb-2">
                           Name: {user_name}
                         </h3>
-                        <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
-                          <i class="fa-solid fa-wallet text-lg mr-2 text-blueGray-400"></i>
+                        <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
+                          <i className="fa-solid fa-wallet text-lg mr-2 text-blueGray-400"></i>
                           Wallet address: {user_address}
                         </div>
-                        <div class="mb-2 text-blueGray-600 mt-10 break-all">
-                          <i class="fa-solid fa-flag mr-2 text-lg text-blueGray-400"></i>
+                        <div className="mb-2 text-blueGray-600 mt-10 break-all">
+                          <i className="fa-solid fa-flag mr-2 text-lg text-blueGray-400"></i>
                           Flagged words -{" "}
                           {myFlaggedWords.length > 0 && (
                             <>
                               {myFlaggedWords.map((el, i) => (
-                                <>
-                                  <span
-                                    key={i}
-                                    class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
-                                  >
-                                    {el}
-                                  </span>
-                                </>
+                                <span
+                                  key={i}
+                                  className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+                                >
+                                  {el}
+                                </span>
                               ))}
                             </>
                           )}
@@ -247,14 +245,12 @@ const NavBar = () => {
                     {words.length > 0 && (
                       <>
                         {words.map((el, i) => (
-                          <>
-                            <span
-                              key={i}
-                              class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
-                            >
-                              {el}
-                            </span>
-                          </>
+                          <span
+                            key={i}
+                            className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+                          >
+                            {el}
+                          </span>
                         ))}
                       </>
                     )}

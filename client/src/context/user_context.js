@@ -41,11 +41,10 @@ const UserContextProvider = ({ children }) => {
 
     if (window.ethereum) {
       window.ethereum.on("accountsChanged", (accounts) => {
-        // setLoading(true);
-        // window.location.reload();
+        setLoading(true);
+        window.location.reload();
       });
     }
-    // }, []);
   }, [user_address, contract]);
 
   //connect metamask to network
