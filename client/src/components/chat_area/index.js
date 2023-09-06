@@ -7,6 +7,8 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import "./index.css";
+import Filter from "bad-words";
+import { toast } from "react-toastify";
 
 const ChatArea = ({ title }) => {
   const { CommunityMessages, myCommunity, sendMessage, communityMembers } =
@@ -72,6 +74,8 @@ const ChatArea = ({ title }) => {
     return <span>Browser doesn't support speech recognition.</span>;
   }
 
+  const filter = new Filter();
+
   function closeModal() {
     setIsOpen(false);
   }
@@ -89,10 +93,22 @@ const ChatArea = ({ title }) => {
       communityID: myCommunity,
     };
 
+    if (filter.isProfane(message)) {
+      return toast.error("message contains profane words", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
     try {
       await sendMessage(msg);
     } catch (error) {
-      console.log("catch");
       console.log(error);
     }
   };

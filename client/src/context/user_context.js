@@ -106,21 +106,29 @@ const UserContextProvider = ({ children }) => {
   };
 
   const get = async (contract) => {
-    const res = await contract.getMe();
-    if (res.name) {
-      setUserName(res.name);
-    } else {
-      setUserName("");
+    try {
+      const res = await contract.getMe();
+      if (res.name) {
+        setUserName(res.name);
+      } else {
+        setUserName("");
+      }
+    } catch (error) {
+      window.location.reload();
     }
   };
 
   const checkIfAdmin = async (contract, address) => {
-    const result = await contract._isAdmin(address);
-    setisAdmin(result);
-    if (result) {
-      setUserName("admin");
+    try {
+      const result = await contract._isAdmin(address);
+      setisAdmin(result);
+      if (result) {
+        setUserName("admin");
+      }
+      setLoading(false);
+    } catch (error) {
+      window.location.reload();
     }
-    setLoading(false);
   };
 
   const getAFriend = async (user) => {

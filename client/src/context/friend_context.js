@@ -25,22 +25,27 @@ const FriendContextProvider = ({ children }) => {
         setLoading(true);
         window.ethereum.reload();
         console.log(error);
+        setLoading(false);
       }
     };
 
     const get = async (contract) => {
-      let result = await contract.getFriends();
-      if (result.length > 0) {
-        let data = await Promise.all(
-          result.map(async (el) => {
-            const messages = await contract.getChatWithFriend(el.user);
+      try {
+        let result = await contract.getFriends();
+        if (result.length > 0) {
+          let data = await Promise.all(
+            result.map(async (el) => {
+              const messages = await contract.getChatWithFriend(el.user);
 
-            return { ...el, messages };
-          })
-        );
-        result = data;
+              return { ...el, messages };
+            })
+          );
+          result = data;
+        }
+        setFriends(result);
+      } catch (error) {
+        window.location.reload();
       }
-      setFriends(result);
     };
 
     loadMyContract();
@@ -87,9 +92,8 @@ const FriendContextProvider = ({ children }) => {
       result
         .wait()
         .then(async () => {
-          await getMessagesWithAFriend(data.friend).then(() => {
-            setLoading(false);
-          });
+          await getMessagesWithAFriend(data.friend);
+          setLoading(false);
         })
         .catch((e) => console.log(e));
     } catch (error) {

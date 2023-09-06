@@ -51,7 +51,7 @@ const Index = () => {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
+                      <p className="text-sm font-medium text-gray-900 truncate">
                         {friend.name}
                       </p>
                       <p className="text-sm text-gray-500 truncate dark:text-gray-400">
@@ -59,7 +59,7 @@ const Index = () => {
                         {/* friend.messages[friend.messages.le] */}
                       </p>
                     </div>
-                    <div className="inline-flex items-center font-thin text-xs underline text-gray-900 dark:text-white">
+                    <div className="inline-flex items-center font-thin text-xs underline text-gray-900">
                       11:35AM
                     </div>
                   </div>
@@ -86,11 +86,15 @@ const Index = () => {
                             {el.name}
                           </p>
                           <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                            {/* Lorem dolor sit amet the quick brown fox jumps */}
+                            {el.messages.length > 0 && (
+                              <>{el.messages[el.messages.length - 1]._msg}</>
+                            )}
                           </p>
                         </div>
                         <div className="inline-flex items-center font-thin text-xs underline text-gray-900 dark:text-white">
-                          {/* 11:35AM */}
+                          {/* {el.messages.length > 0 && (
+                            <>{el.messages[el.messages.length - 1].time._hex}</>
+                          )} */}
                         </div>
                       </div>
                     </li>

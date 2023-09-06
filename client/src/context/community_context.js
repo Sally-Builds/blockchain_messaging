@@ -29,14 +29,22 @@ const CommunityContextProvider = ({ children }) => {
   }, [contract]);
 
   const getAllCommunities = async (contract) => {
-    const res = await contract.getAllCommunities();
-    setCommunities(res);
+    try {
+      const res = await contract.getAllCommunities();
+      setCommunities(res);
+    } catch (error) {
+      window.location.reload();
+    }
   };
 
   const getCommunity = async (communityID) => {
-    const comm = communities.filter((el) => el.communityID === communityID);
-    setCommunity(comm[0]);
-    await getCommunityMembers(communityID);
+    try {
+      const comm = communities.filter((el) => el.communityID === communityID);
+      setCommunity(comm[0]);
+      await getCommunityMembers(communityID);
+    } catch (error) {
+      window.location.reload();
+    }
   };
 
   const getCommunityMembers = async (communityID) => {
@@ -72,14 +80,13 @@ const CommunityContextProvider = ({ children }) => {
 
   const sendMessage = async (data) => {
     try {
-      // await contract.sendMessage(data.communityID, data.msg);
       setLoading(true);
       const res = await contract["sendMessage(bytes32,string)"](
         data.communityID,
         data.msg
       );
-      res.wait();
-      await getCommunityMessages(data.communityID).then(() => {
+      res.wait().then(async () => {
+        await getCommunityMessages(data.communityID);
         setLoading(false);
       });
     } catch (error) {
@@ -116,7 +123,7 @@ const CommunityContextProvider = ({ children }) => {
   const joinCommunity = async (communityID) => {
     try {
       setLoading(true);
-      await contract.joinCommunity(communityID);
+      const res = await contract.joinCommunity(communityID);
       toast.success("🦄 successfully joined community!", {
         position: "bottom-center",
         autoClose: 5000,
@@ -127,7 +134,10 @@ const CommunityContextProvider = ({ children }) => {
         progress: undefined,
         theme: "light",
       });
-      await getCommunityMembers(communityID);
+      res.wait().then(async () => {
+        await getCommunityMembers(communityID);
+        setLoading(false);
+      });
     } catch (error) {
       if (error.data) {
         toast.error(error.data.message, {
