@@ -25,7 +25,7 @@ const Index = () => {
     <>
       <div className="grid grid-cols-12 h-screen dark:bg-sky-950">
         <div className="col-span-4 p-2 border-double border-r-2 h-full">
-          <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
+          <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200  dark:border-gray-700">
             <ul className="flex flex-wrap -mb-px">
               <li className="mr-2">
                 <Link

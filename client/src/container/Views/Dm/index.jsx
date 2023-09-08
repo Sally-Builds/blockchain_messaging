@@ -54,7 +54,7 @@ const Index = () => {
                       <p className="text-sm font-medium text-gray-900 truncate">
                         {friend.name}
                       </p>
-                      <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                      <p className="text-sm text-gray-500 truncate">
                         {/* Lorem dolor sit amet the quick brown fox jumps */}
                         {/* friend.messages[friend.messages.le] */}
                       </p>
@@ -82,10 +82,10 @@ const Index = () => {
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
+                          <p className="text-sm font-medium text-gray-900 truncate">
                             {el.name}
                           </p>
-                          <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                          <p className="text-sm text-gray-500 truncate">
                             {el.messages.length > 0 && (
                               <>{el.messages[el.messages.length - 1]._msg}</>
                             )}
